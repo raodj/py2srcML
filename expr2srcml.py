@@ -82,15 +82,13 @@ def convertConstant(const: ast.Constant) -> str:
         Returns the srcML XML fragment for the literal
     """
     if isinstance(const.value, str):
-        srcXML = xml.form("literal type=\"string\"", "\"" + const.value + "\"")
+        return xml.form("literal type=\"string\"", "\"" + const.value + "\"")
     elif isinstance(const.value, bool):
-        srcXML = xml.form("literal type=\"boolean\"", "\"" + str(const.value) + "\"")
+        return xml.form("literal type=\"boolean\"", "\"" + str(const.value) + "\"")
     elif isinstance(const.value, float) or isinstance(const.value, int):
-        srcXML = convertNum(ast.Num(const.value))
+        return xml.form("literal type=\"number\"", str(const.value))
     else:
         raise Exception("Unhandled Constant {}".format(ast.dump(const)))
-
-    return srcXML
 
 
 def convertBoolOper(binOp: ast.BoolOp) -> str:
@@ -142,9 +140,6 @@ def convertCompare(comp: ast.Compare) -> str:
         lhsXML = rhsXML
     # Return the formatted XML
     return xml.form("expr", exprXML)
-
-def convertNum(num: ast.Num) -> str:
-    return xml.form("literal type=\"number\"", num.n)
 
 
 def convertTuple(tup: ast.Tuple) -> str:
@@ -274,8 +269,6 @@ def convertExprValue(exprVal: xml.AST_ExprNodes) -> str:
         exprXML = convertCompare(exprVal)
     elif isinstance(exprVal, ast.Call):
         exprXML = func2srcml.convertFuncCall(exprVal)
-    elif isinstance(exprVal, ast.Num):
-        exprXML = convertNum(exprVal)
     elif isinstance(exprVal, ast.FormattedValue):
         raise Exception("Unhandled FormattedValue {}".format(ast.dump(exprVal)));
     elif isinstance(exprVal, ast.JoinedStr):
@@ -296,8 +289,6 @@ def convertExprValue(exprVal: xml.AST_ExprNodes) -> str:
         exprXML = convertTuple(exprVal)
     elif isinstance(exprVal, ast.Slice):
         raise Exception("Unhandled Slice {}".format(ast.dump(exprVal)));
-    elif isinstance(exprVal, ast.Str):
-        return xml.form("literal type=\"string\"", "\"" + exprVal.s + "\"")
     elif isinstance(exprVal, ast.NameConstant):
         const: ast.NameConstant = exprVal
         return str(const.value)
