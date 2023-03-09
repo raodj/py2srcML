@@ -75,9 +75,22 @@ def convertName(node: typing.Union[ast.Name, ast.Expr]) -> str:
 
 
 def convertConstant(const: ast.Constant) -> str:
-    # Not sure what srcML XML node this should map to.
-    raise Exception("Unhandled Constant {}".format(ast.dump(const)));
-    return None
+    """Helper method to convert literals to srcML XML
+    Arguments:
+        const: An ast.Constant node containing the literal
+    Returns:
+        Returns the srcML XML fragment for the literal
+    """
+    if isinstance(const.value, str):
+        srcXML = xml.form("literal type=\"string\"", "\"" + const.value + "\"")
+    elif isinstance(const.value, bool):
+        srcXML = xml.form("literal type=\"boolean\"", "\"" + str(const.value) + "\"")
+    elif isinstance(const.value, float) or isinstance(const.value, int):
+        srcXML = convertNum(ast.Num(const.value))
+    else:
+        raise Exception("Unhandled Constant {}".format(ast.dump(const)))
+
+    return srcXML
 
 
 def convertBoolOper(binOp: ast.BoolOp) -> str:
