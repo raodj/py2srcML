@@ -87,6 +87,10 @@ def convertConstant(const: ast.Constant) -> str:
         return xml.form("literal type=\"boolean\"", "\"" + str(const.value) + "\"")
     elif isinstance(const.value, float) or isinstance(const.value, int):
         return xml.form("literal type=\"number\"", str(const.value))
+    elif isinstance(const.value, complex):
+        return xml.form("literal type=\"complex\"", "\"" + str(const.value) + "\"")
+    elif const.value is None:
+        return xml.form("literal type=\"none\"", "\"" + str(const.value) + "\"")
     else:
         raise Exception("Unhandled Constant {}".format(ast.dump(const)))
 
@@ -205,8 +209,8 @@ def convertSubscript(sub: ast.Subscript) -> str:
     """
     if isinstance(sub.slice, ast.Slice):
         return convertExpr(sub.value) + convertSlice(sub.slice)
-    elif isinstance(sub.slice, ast.Index):
-        return convertExpr(sub.value) + convertExprValue(sub.slice.value)
+    elif isinstance(sub.slice, ast.Constant):
+        return convertExpr(sub.value) + convertExprValue(sub.slice)
     else:
         raise Exception("Unhandled subscript {}".format(ast.dump(sub)))
 
