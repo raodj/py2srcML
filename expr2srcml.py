@@ -211,6 +211,8 @@ def convertSubscript(sub: ast.Subscript) -> str:
         return convertExpr(sub.value) + convertSlice(sub.slice)
     elif isinstance(sub.slice, ast.Constant):
         return convertExpr(sub.value) + convertExprValue(sub.slice)
+    elif isinstance(sub.slice, ast.Name):
+        return convertExpr(sub.value) + convertName(sub.slice)
     else:
         raise Exception("Unhandled subscript {}".format(ast.dump(sub)))
 

@@ -165,7 +165,7 @@ def convertStmt(stmt: AST_StmtNodes) -> str:
         exprXML = expr2srcml.convertExpr(stmt)
         return "<expr_stmt>{}</expr_stmt>".format(exprXML)
     elif isinstance(stmt, ast.Pass):
-        raise Exception("Unhandled pass {}".format(ast.dump(stmt)))
+        return "<empty_stmt>pass</empty_stmt>"
     elif isinstance(stmt, ast.Break):
         return "<break>break</break>"
     elif isinstance(stmt, ast.Continue):
