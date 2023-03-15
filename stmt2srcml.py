@@ -108,8 +108,12 @@ def convertAugAssignment(stmt: ast.AugAssign) -> str:
     return xml.form("expr_stmt", lhsXML + opXML + rhsXML)
 
 def convertTry(tryStmt: ast.Try) -> str:
-    """Helper method to convert try/except blocks into srcML
-
+    """Helper method to convert try/except blocks into srcML.
+    This method would be called to covert the following Python code:
+        try:
+            pass
+        except (Exception, ValueError) as e:
+            pass
     Arguments:
         stmt: the try/except block to be converted as an ast.Try object
 
@@ -121,11 +125,35 @@ def convertTry(tryStmt: ast.Try) -> str:
         exception = expr2srcml.convertExprValue(handler.type) if handler.type else ""
         name = expr2srcml.convertName(ast.Name(handler.name, ast.Store())) if handler.name else ""
         body = convertBlock(handler.body)
-        XML += xml.form("catch", exception + name + body)
+        XML += xml.form("catch", "except" + exception + name + body)
+    # should else be supported?
     XML += xml.form("else", convertBlock(tryStmt.orelse)) if len(tryStmt.orelse) > 0 else ""
     XML += xml.form("finally", convertBlock(tryStmt.finalbody)) if len(tryStmt.finalbody) > 0 else ""
 
-    return xml.form("try",XML)
+    return xml.form("try","try" + XML)
+
+def convertClassDef(classDef: ast.ClassDef) -> str:
+    """Helper method to convert
+
+    """
+
+    XML = ""
+    # decorators
+    for dec in classDef.decorator_list:
+        XML += xml.form("annotation", "@" + expr2srcml.convertName(dec))
+    XML += "class" + expr2srcml.convertName(ast.Name(classDef.name)) + "("
+    # base classes
+    bases = ""
+    for base in classDef.bases:
+        bases += xml.form("super", expr2srcml.convertName(base))
+    bases = xml.form("super_list", bases) if len(classDef.bases) > 0 else ""
+    XML += bases
+
+
+    XML += ")"
+    XML += convertBlock(classDef.body)
+    return xml.form("class", XML)
+
 
 def convertStmt(stmt: AST_StmtNodes) -> str:
     """
@@ -142,11 +170,16 @@ def convertStmt(stmt: AST_StmtNodes) -> str:
     elif isinstance(stmt, ast.AsyncFunctionDef):
         raise Exception("Unhandled async func def {}".format(ast.dump(stmt)))
     elif isinstance(stmt, ast.ClassDef):
-        raise Exception("Unhandled class def {}".format(ast.dump(stmt)))
+        return convertClassDef(stmt)
+        # raise Exception("Unhandled class def {}".format(ast.dump(stmt)))
     elif isinstance(stmt, ast.Return):
         retXML = expr2srcml.convertExpr(stmt.value) if stmt.value else ""
         return "<return>return{};</return>".format(retXML)
     elif isinstance(stmt, ast.Delete):
+        # delXML = xml.form("specifier", "del")
+        # for target in stmt.targets:
+        #     delXML += expr2srcml.convertExprValue(target)
+        # return delXML
         raise Exception("Unhandled delete {}".format(ast.dump(stmt)))
     elif isinstance(stmt, ast.Assign):
         return convertAssignment(stmt)
