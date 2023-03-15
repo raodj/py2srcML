@@ -207,14 +207,7 @@ def convertSubscript(sub: ast.Subscript) -> str:
     Returns:
         Returns a string corresponding to the XML
     """
-    if isinstance(sub.slice, ast.Slice):
-        return convertExpr(sub.value) + convertSlice(sub.slice)
-    elif isinstance(sub.slice, ast.Constant):
-        return convertExpr(sub.value) + convertExprValue(sub.slice)
-    elif isinstance(sub.slice, ast.Name):
-        return convertExpr(sub.value) + convertName(sub.slice)
-    else:
-        raise Exception("Unhandled subscript {}".format(ast.dump(sub)))
+    return convertExpr(sub.value) + convertExprValue(sub.slice)
 
 
 def convertUnaryOp(uop: ast.UnaryOp) -> str:
@@ -282,7 +275,7 @@ def convertExprValue(exprVal: xml.AST_ExprNodes) -> str:
     elif isinstance(exprVal, ast.Constant):
         exprXML = convertConstant(exprVal)
     elif isinstance(exprVal, ast.Attribute):
-        return convertAttribute(exprVal)
+        exprXML = convertAttribute(exprVal)
     elif isinstance(exprVal, ast.Subscript):
         exprXML = convertSubscript(exprVal)
     elif isinstance(exprVal, ast.Starred):
@@ -294,7 +287,7 @@ def convertExprValue(exprVal: xml.AST_ExprNodes) -> str:
     elif isinstance(exprVal, ast.Tuple):
         exprXML = convertTuple(exprVal)
     elif isinstance(exprVal, ast.Slice):
-        raise Exception("Unhandled Slice {}".format(ast.dump(exprVal)));
+        exprXML = convertSlice(exprVal)
     elif isinstance(exprVal, ast.NameConstant):
         const: ast.NameConstant = exprVal
         return str(const.value)

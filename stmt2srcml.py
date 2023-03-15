@@ -107,6 +107,25 @@ def convertAugAssignment(stmt: ast.AugAssign) -> str:
     rhsXML = expr2srcml.convertExpr(stmt.value)
     return xml.form("expr_stmt", lhsXML + opXML + rhsXML)
 
+def convertTry(tryStmt: ast.Try) -> str:
+    """Helper method to convert try/except blocks into srcML
+
+    Arguments:
+        stmt: the try/except block to be converted as an ast.Try object
+
+    Returns:
+        the srcML XML corresponding to the given block
+    """
+    XML = convertBlock(tryStmt.body)
+    for handler in tryStmt.handlers:
+        exception = expr2srcml.convertExprValue(handler.type) if handler.type else ""
+        name = expr2srcml.convertName(ast.Name(handler.name, ast.Store())) if handler.name else ""
+        body = convertBlock(handler.body)
+        XML += xml.form("catch", exception + name + body)
+    XML += xml.form("else", convertBlock(tryStmt.orelse)) if len(tryStmt.orelse) > 0 else ""
+    XML += xml.form("finally", convertBlock(tryStmt.finalbody)) if len(tryStmt.finalbody) > 0 else ""
+
+    return xml.form("try",XML)
 
 def convertStmt(stmt: AST_StmtNodes) -> str:
     """
@@ -150,7 +169,7 @@ def convertStmt(stmt: AST_StmtNodes) -> str:
     elif isinstance(stmt, ast.Raise):
         raise Exception("Unhandled raise {}".format(ast.dump(stmt)))
     elif isinstance(stmt, ast.Try):
-        raise Exception("Unhandled try {}".format(ast.dump(stmt)))
+        return convertTry(stmt)
     elif isinstance(stmt, ast.Assert):
         raise Exception("Unhandled assert {}".format(ast.dump(stmt)))
     elif isinstance(stmt, ast.Import):

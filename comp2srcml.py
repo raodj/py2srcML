@@ -75,7 +75,9 @@ def convertGenerators(generators: ast.comprehension) -> str:
         # Convert the sub-parts of the generator
         targetXML = expr2srcml.convertExpr(gen.target)
         forXML    = expr2srcml.convertExpr(gen.iter)
-        ifXML     = expr2srcml.convertExpr(gen.ifs) if gen.ifs else ""
+        ifXML = ""
+        for condition in gen.ifs:
+            ifXML += expr2srcml.convertExpr(condition)
         # Combine the generators into an XML
         genXML += xml.form("block", targetXML, forXML, ifXML)
     
