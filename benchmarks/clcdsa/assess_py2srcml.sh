@@ -47,6 +47,7 @@ function assessDir() {
             echo "${pySrc}" >> py2srcml_log.txt
             "${PY2SRCML}" "${pySrc}" > /dev/null 2>> py2srcml_log.txt
             if [ $? -eq 0 ]; then
+              # check if XML is valid, add columns - genSuccess and xmlSuccess
                 (( dirStats[1]++ ))
             fi
         done
