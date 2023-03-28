@@ -23,7 +23,7 @@ PY2SRCML="../../py2srcml.py"
 function assessDir() {
     # Create an alias to improve readability
     local dir="$1"
-    local dirStats=(0 0)
+    local dirStats=(0 0 0)
     # Process any sub-directories first
     ls -d ${dir}/*/ 2> /dev/null > /dev/null
     if [ $? -eq 0 ]; then
@@ -33,6 +33,7 @@ function assessDir() {
             local subDirStats=( `assessDir "${subdir}"` )
             dirStats[0]=$(( dirStats[0] + subDirStats[0] ))
             dirStats[1]=$(( dirStats[1] + subDirStats[1] ))
+            dirStats[2]=$(( dirStats[2] + subDirStats[2] ))
         done
     fi
 
@@ -45,24 +46,30 @@ function assessDir() {
             (( dirStats[0]++ ))
             # Process the source file and update directory stats
             echo "${pySrc}" >> py2srcml_log.txt
-            "${PY2SRCML}" "${pySrc}" > /dev/null 2>> py2srcml_log.txt
+            "${PY2SRCML}" "${pySrc}" > py2srcml_log.xml 2>> py2srcml_log.txt
             if [ $? -eq 0 ]; then
-              # check if XML is valid, add columns - genSuccess and xmlSuccess
+              # XML successfully generated
                 (( dirStats[1]++ ))
+              # check if the generated XML is valid
+              xmllint --noout py2srcml_log.xml 2>> py2srcml_validator_log.txt
+              if [ $? -eq 0 ]; then
+                (( dirStats[2]++ ))
+              fi
+              rm py2srcml_log.xml
             fi
         done
     fi
     # Print the statistics for this directory
-    >&2 echo -e "${dirStats[0]}\t${dirStats[1]}\t${dir}"
+    >&2 echo -e "${dirStats[0]}\t${dirStats[1]}\t${dirStats[2]}\t${dir}"
     # Return the stats back to the caller
-    echo -e "${dirStats[0]}\t${dirStats[1]}\t${dir}"
+    echo -e "${dirStats[0]}\t${dirStats[1]}\t${dirStats[2]}\t${dir}"
     return 0
 }
 
 # The main function
 #   $*: The main function 
 function main() {
-    echo -e "#Files\t#Pass\tDir"
+    echo -e "#Files\t#Gen\t#Valid\tDir"
     for dir in $*;
     do
         local ret=`assessDir "${dir}"`
