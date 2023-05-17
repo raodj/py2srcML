@@ -146,7 +146,7 @@ def convertOperator(op: ast.operator) -> str:
     elif isinstance(op, ast.Pow):
         opStr = "**"
     elif isinstance(op, ast.LShift):
-        opStr = "<<"
+        opStr = "&lt;&lt;"
     elif isinstance(op, ast.RShift):
         opStr = "&gt;&gt;"
     elif isinstance(op, ast.BitOr):
@@ -154,7 +154,7 @@ def convertOperator(op: ast.operator) -> str:
     elif isinstance(op, ast.BitXor):
         opStr = "^"
     elif isinstance(op, ast.BitAnd):
-        opStr = "&"
+        opStr = "&amp;"
     elif isinstance(op, ast.FloorDiv):
         opStr = "//"
     else:

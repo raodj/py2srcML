@@ -54,7 +54,7 @@ def convertListComp(stmt: ast.ListComp) -> str:
     # Convert the generators to an array in list
     genXML = convertGenerators(stmt.generators)
     # Combine the XML fragments together
-    return eltXML + xml.form("operator", "&eq;") + genXML
+    return eltXML + xml.form("operator", "=") + genXML
 
 
 def convertGenerators(generators: ast.comprehension) -> str:
@@ -79,7 +79,8 @@ def convertGenerators(generators: ast.comprehension) -> str:
         for condition in gen.ifs:
             ifXML += expr2srcml.convertExpr(condition)
         # Combine the generators into an XML
-        genXML += xml.form("block", targetXML, forXML, ifXML)
+        # genXML += xml.form("block", targetXML, forXML, ifXML)
+        genXML += xml.form("block", targetXML + forXML + ifXML)
     
     return genXML
 
@@ -102,7 +103,7 @@ def convertGenExp(stmt: ast.GeneratorExp) -> str:
     # Convert the generators to an array in list
     genXML = convertGenerators(stmt.generators)
     # Combine the XML fragments together
-    return eltXML + xml.form("operator", "&eq;") + genXML
+    return eltXML + xml.form("operator", "=") + genXML
 
 
 def convertDict(dict: ast.Dict) -> str:

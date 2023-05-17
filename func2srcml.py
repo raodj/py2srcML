@@ -128,8 +128,8 @@ def convertFuncCall(call: ast.Call) -> str:
     # First figure out the name of function being called.
     # The call.func can be slightly different objects.
 
-    fnName:str = expr2srcml.convertName(call.func) if not isinstance(call.func, ast.Lambda) else\
-        convertLambda(call.func)
+    fnName:str = expr2srcml.convertExprValue(call.func)
+
     if not fnName:
         raise Exception("Invalid function call {}".format(ast.dump(call)))
     # Start the starting XML-node for function calls
@@ -146,7 +146,8 @@ def convertFuncCall(call: ast.Call) -> str:
                 expr2srcml.convertExpr(kw.value))
 
     # Add the ending XML-node for the function call.
-    fnXML += ")</argument_list></call> <!-- {} -->".format(fnName)
+    # fnXML += ")</argument_list></call> <!-- {} -->".format(fnName)
+    fnXML += ")</argument_list></call>"
     return fnXML
 
 
