@@ -82,7 +82,7 @@ def convertConstant(const: ast.Constant) -> str:
         Returns the srcML XML fragment for the literal
     """
     if isinstance(const.value, str):
-        return xml.form("literal type=\"string\"", "\"" + const.value + "\"")
+        return xml.form("literal type=\"string\"", "\"" + xml.escape(const.value) + "\"")
     elif isinstance(const.value, bool):
         return xml.form("literal type=\"boolean\"", "\"" + str(const.value) + "\"")
     elif isinstance(const.value, float) or isinstance(const.value, int):

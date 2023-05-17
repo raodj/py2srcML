@@ -74,4 +74,18 @@ def form(*tagValPairs) -> str:
             xmlStr += "<{}>{}</{}>".format(stTag, val, endTag)
     return xmlStr
 
+def escape(text: str) -> str:
+    """Escapes <, >, & characters from an input string
+    Arguments:
+        text: The input string
+    Returns:
+        A string with escaped characters
+    """
+    text = text.replace("&", "&amp;")
+    text = text.replace("<", "&lt;")
+    text = text.replace(">", "&gt;")
+    # text.replace("\'", "&apos;")
+    # text.replace("\"", "&quot;")
+    return text
+
 # End of source code
