@@ -129,11 +129,12 @@ def convertDeclaration(stmt: typing.Union[ast.Nonlocal,ast.Global]) -> str:
     for i in range(len(stmt.names)):
         if i == 0:
             globalXML += f"<decl><type><specifier>{specifier}</specifier></type>" \
-                         f"{expr2srcml.convertName(ast.Name(stmt.names[i]))}</decl>,"
+                         f"{expr2srcml.convertName(ast.Name(stmt.names[i]))}</decl><operator>,</operator>"
         else:
-            globalXML += f"<decl><type ref=\"prev\"/>{expr2srcml.convertName(ast.Name(stmt.names[i]))}</decl>,"
+            globalXML += f"<decl><type ref=\"prev\"/>{expr2srcml.convertName(ast.Name(stmt.names[i]))}</decl>" \
+                         f"<operator>,</operator>"
     # removes trailing comma
-    globalXML = globalXML[:-1] + "</decl_stmt>"
+    globalXML = globalXML[:-22] + "</decl_stmt>"
     return globalXML
 
 
@@ -155,7 +156,7 @@ def convertStmt(stmt: AST_StmtNodes) -> str:
         return class2srcml.convertClassDef(stmt)
     elif isinstance(stmt, ast.Return):
         retXML = expr2srcml.convertExpr(stmt.value) if stmt.value else ""
-        return "<return>return{};</return>".format(retXML)
+        return "<return>return{}</return>".format(retXML)
     elif isinstance(stmt, ast.Delete):
         raise Exception("Unhandled delete {}".format(ast.dump(stmt)))
     elif isinstance(stmt, ast.Assign):
@@ -177,11 +178,23 @@ def convertStmt(stmt: AST_StmtNodes) -> str:
     elif isinstance(stmt, ast.AsyncWith):
         raise Exception("Unhandled async with {}".format(ast.dump(stmt)))
     elif isinstance(stmt, ast.Raise):
-        raise Exception("Unhandled raise {}".format(ast.dump(stmt)))
+        raiseXML = "<throw>raise"
+        raiseXML += expr2srcml.convertExpr(stmt.exc)
+        if stmt.cause is not None:
+            raiseXML += "<name>from</name>"
+            raiseXML += expr2srcml.convertExpr(stmt.cause)
+        raiseXML += "</throw>"
+        return raiseXML
     elif isinstance(stmt, ast.Try):
         return try2srcml.convertTry(stmt)
     elif isinstance(stmt, ast.Assert):
-        raise Exception("Unhandled assert {}".format(ast.dump(stmt)))
+        assertXML = "<assert>"
+        assertXML += expr2srcml.convertExpr(stmt.test)
+        if stmt.msg is not None:
+            assertXML += "<operator>,</operator>"
+            assertXML += expr2srcml.convertExpr(stmt.msg)
+        assertXML += "</assert>"
+        return assertXML
     elif isinstance(stmt, ast.Import):
         return import2srcml.convertImport(stmt)
     elif isinstance(stmt, ast.ImportFrom):
