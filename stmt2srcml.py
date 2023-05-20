@@ -84,7 +84,7 @@ def convertAssignment(stmt: ast.Assign) -> str:
         stmt: The assignment statement to be converted to srcML
 
     Returns:
-        The srcML XML corresponing to the given assignment statement
+        The srcML XML corresponding to the given assignment statement
     """
     if len(stmt.targets) > 1: 
         raise Exception("Unhandled many targets {}".format(ast.dump(stmt)));
@@ -101,13 +101,40 @@ def convertAugAssignment(stmt: ast.AugAssign) -> str:
         stmt: The augumented assignment statement to be converted to srcML
 
     Returns:
-        The srcML XML corresponing to the given statement
+        The srcML XML corresponding to the given statement
     """
     # Get the XML for the target expression
     lhsXML = expr2srcml.convertExpr(stmt.target)
     opXML  = op2srcml.convertOp(stmt.op)
     rhsXML = expr2srcml.convertExpr(stmt.value)
     return xml.form("expr_stmt", lhsXML + opXML + rhsXML)
+
+def convertDeclaration(stmt: typing.Union[ast.Nonlocal,ast.Global]) -> str:
+    """Helper method to convert non-local and global variable declarations
+    of the form 'global x' to corresponding srcML XML.
+
+    Arguments:
+        stmt: The declaration statement to be converted
+
+    Returns:
+        The srcML XML corresponding to the given statement
+    """
+
+    if isinstance(stmt, ast.Global):
+        specifier = "global"
+    else:
+        specifier = "nonlocal"
+
+    globalXML = "<decl_stmt>"
+    for i in range(len(stmt.names)):
+        if i == 0:
+            globalXML += f"<decl><type><specifier>{specifier}</specifier></type>" \
+                         f"{expr2srcml.convertName(ast.Name(stmt.names[i]))}</decl>,"
+        else:
+            globalXML += f"<decl><type ref=\"prev\"/>{expr2srcml.convertName(ast.Name(stmt.names[i]))}</decl>,"
+    # removes trailing comma
+    globalXML = globalXML[:-1] + "</decl_stmt>"
+    return globalXML
 
 
 def convertStmt(stmt: AST_StmtNodes) -> str:
@@ -160,9 +187,9 @@ def convertStmt(stmt: AST_StmtNodes) -> str:
     elif isinstance(stmt, ast.ImportFrom):
         return import2srcml.convertImportFrom(stmt)
     elif isinstance(stmt, ast.Global):
-        raise Exception("Unhandled global {}".format(ast.dump(stmt)))
+        return convertDeclaration(stmt)
     elif isinstance(stmt, ast.Nonlocal):
-        raise Exception("Unhandled non local {}".format(ast.dump(stmt)))
+        return convertDeclaration(stmt)
     elif isinstance(stmt, ast.Expr):
         exprXML = expr2srcml.convertExpr(stmt)
         return "<expr_stmt>{}</expr_stmt>".format(exprXML)
