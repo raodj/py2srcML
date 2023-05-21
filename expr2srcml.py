@@ -175,8 +175,26 @@ def convertList(lst: ast.List) -> str:
         lstXML += convertExpr(entry)
     # Return the overall index expression
     lstXML = "[" + lstXML + "]"
-    return xml.form("block", lstXML) 
+    return xml.form("block", lstXML)
 
+def convertSet(set: ast.Set) -> str:
+    """Method to convert a set of the form {1, 2, 3} to srcML XML
+
+    Arguments:
+        set: The set to be converted to XML
+
+    Returns
+        The XML corresponding to the set
+    """
+
+    setXML = ""
+    for entry in set.elts:
+        # Add the ',' separator that may be needed
+        setXML += xml.form("operator", ",") if setXML else ""
+        setXML += convertExpr(entry)
+    # Return the overall index expression
+    setXML = "{" + setXML + "}"
+    return xml.form("block", setXML)
 
 def convertSlice(slice: ast.Slice) -> str:
     """Helper method to convert a slice to a suitable srcML XML.
@@ -236,8 +254,8 @@ def convertExprValue(exprVal: xml.AST_ExprNodes) -> str:
     exprXML = ""
     if isinstance(exprVal, ast.BoolOp):
         exprXML = convertBoolOper(exprVal)
-    # elif isinstance(expr.value, ast.NamedExpr):
-    #    raise Exception("Unhandled NamedExpr {}".format(ast.dump(exprVal)));
+    elif isinstance(exprVal, ast.NamedExpr):
+       raise Exception("Unhandled NamedExpr {}".format(ast.dump(exprVal)));
     elif isinstance(exprVal, ast.BinOp):
         exprXML = convertBinOper(exprVal)
     elif isinstance(exprVal, ast.UnaryOp):
@@ -249,7 +267,7 @@ def convertExprValue(exprVal: xml.AST_ExprNodes) -> str:
     elif isinstance(exprVal, ast.Dict):
         exprXML = comp2srcml.convertDict(exprVal)
     elif isinstance(exprVal, ast.Set):
-        raise Exception("Unhandled Set {}".format(ast.dump(exprVal)));
+        exprXML = convertSet(exprVal)
     elif isinstance(exprVal, ast.ListComp):
         exprXML = comp2srcml.convertListComp(exprVal)
     elif isinstance(exprVal, ast.SetComp):

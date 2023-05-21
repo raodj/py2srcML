@@ -57,7 +57,7 @@ def convertParams(args: ast.arguments) -> str:
     # Process parameters to the function into an list of XML entries
     prmListXML = ""
     for prm in args.args:
-        prmType = xml.form("type", expr2srcml.convertName(prm.annotation))\
+        prmType = xml.form("type", expr2srcml.convertExpr(prm.annotation))\
             if prm.annotation else ""
         prmDecl = xml.form("decl",  prmType + xml.form("name", prm.arg))
         prmListXML += xml.form("parameter", prmDecl)
