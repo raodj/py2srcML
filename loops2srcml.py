@@ -41,7 +41,6 @@ import typing
 
 import expr2srcml
 import stmt2srcml
-import xml
 
 def convertForLoop(stmt: ast.For) -> str:
     """Helper method to convert a for-loop to srcML XML.  Currently,
@@ -51,10 +50,10 @@ def convertForLoop(stmt: ast.For) -> str:
     forXML = "<for>for <control><init><decl>" +\
         expr2srcml.convertExpr(stmt.target) + "<range>in " +\
         expr2srcml.convertExpr(stmt.iter) +\
-        "</range></decl></init></control>";
-    forXML += stmt2srcml.convertBlock(stmt.body);
+        "</range></decl></init></control>"
+    forXML += stmt2srcml.convertBlock(stmt.body)
     if len(stmt.orelse) > 0:
-        raise Exception("Unhandled for-else {}".format(ast.dump(stmt)));
+        raise Exception("Unhandled for-else {}".format(ast.dump(stmt)))
     forXML += "</for>"
     return forXML
 
@@ -66,9 +65,9 @@ def convertWhileLoop(stmt: ast.While) -> str:
     """
     whileXML = "<while>while <condition>" +\
         expr2srcml.convertExpr(stmt.test) + "</condition>"
-    whileXML += stmt2srcml.convertBlock(stmt.body);
+    whileXML += stmt2srcml.convertBlock(stmt.body)
     if len(stmt.orelse) > 0:
-        raise Exception("Unhandled while-else {}".format(ast.dump(stmt)));
+        raise Exception("Unhandled while-else {}".format(ast.dump(stmt)))
     whileXML += "</while>"
     return whileXML
 

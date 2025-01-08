@@ -31,7 +31,7 @@
 import ast
 
 import expr2srcml
-import xml
+import XML
 import stmt2srcml
 
 
@@ -55,14 +55,14 @@ def convertTry(tryStmt: ast.Try) -> str:
     Returns:
         the srcML XML corresponding to the given block
     """
-    XML = stmt2srcml.convertBlock(tryStmt.body)
+    tryXML = stmt2srcml.convertBlock(tryStmt.body)
     for handler in tryStmt.handlers:
         exception = expr2srcml.convertExprValue(handler.type) if handler.type else ""
         name = expr2srcml.convertName(ast.Name(handler.name, ast.Store())) if handler.name else ""
         body = stmt2srcml.convertBlock(handler.body)
-        XML += xml.form("catch", "except" + exception + name + body)
+        tryXML += XML.form("catch", "except" + exception + name + body)
     # should else be supported?
-    XML += xml.form("else", stmt2srcml.convertBlock(tryStmt.orelse)) if len(tryStmt.orelse) > 0 else ""
-    XML += xml.form("finally", stmt2srcml.convertBlock(tryStmt.finalbody)) if len(tryStmt.finalbody) > 0 else ""
+    tryXML += XML.form("else", stmt2srcml.convertBlock(tryStmt.orelse)) if len(tryStmt.orelse) > 0 else ""
+    tryXML += XML.form("finally", stmt2srcml.convertBlock(tryStmt.finalbody)) if len(tryStmt.finalbody) > 0 else ""
 
-    return xml.form("try","try" + XML)
+    return XML.form("try","try" + tryXML)

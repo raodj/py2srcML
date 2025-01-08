@@ -37,7 +37,7 @@
 import ast
 
 import expr2srcml
-import xml
+import XML
 
 def convertListComp(stmt: ast.ListComp) -> str:
     """Helper method to convert an import statement to srcML XML.
@@ -54,7 +54,7 @@ def convertListComp(stmt: ast.ListComp) -> str:
     # Convert the generators to an array in list
     genXML = convertGenerators(stmt.generators)
     # Combine the XML fragments together
-    return eltXML + xml.form("operator", "=") + genXML
+    return eltXML + XML.form("operator", "=") + genXML
 
 
 def convertGenerators(generators: ast.comprehension) -> str:
@@ -79,8 +79,8 @@ def convertGenerators(generators: ast.comprehension) -> str:
         for condition in gen.ifs:
             ifXML += expr2srcml.convertExpr(condition)
         # Combine the generators into an XML
-        # genXML += xml.form("block", targetXML, forXML, ifXML)
-        genXML += xml.form("block", targetXML + forXML + ifXML)
+        # genXML += XML.form("block", targetXML, forXML, ifXML)
+        genXML += XML.form("block", targetXML + forXML + ifXML)
     
     return genXML
 
@@ -103,7 +103,7 @@ def convertGenExp(stmt: ast.GeneratorExp) -> str:
     # Convert the generators to an array in list
     genXML = convertGenerators(stmt.generators)
     # Combine the XML fragments together
-    return eltXML + xml.form("operator", "=") + genXML
+    return eltXML + XML.form("operator", "=") + genXML
 
 
 def convertDict(dict: ast.Dict) -> str:
@@ -124,10 +124,10 @@ def convertDict(dict: ast.Dict) -> str:
     #
     dictXML = "["
     for (key, val) in zip(dict.keys, dict.values):
-        dictXML += xml.form("expr", expr2srcml.convertExpr(key) + " = " +\
+        dictXML += XML.form("expr", expr2srcml.convertExpr(key) + " = " +\
             expr2srcml.convertExpr(val))
     dictXML += "]"
-    return xml.form("block", dictXML)
+    return XML.form("block", dictXML)
 
 
 # End of source code

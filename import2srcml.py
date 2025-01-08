@@ -40,7 +40,7 @@
 import ast
 import typing
 
-import xml
+import XML
 
 def convertImport(stmt: ast.Import) -> str:
     """Helper method to convert an import statement to srcML XML.
@@ -54,8 +54,8 @@ def convertImport(stmt: ast.Import) -> str:
     impXML = ""
     # Convert the imports into a list of include statements
     for imp in stmt.names:
-        fileXML = xml.form("file", imp.name)
-        impXML += xml.form("include", "import " + fileXML)
+        fileXML = XML.form("file", imp.name)
+        impXML += XML.form("include", "import " + fileXML)
     # Return the list list of xml
     return impXML
 
@@ -71,9 +71,9 @@ def convertImportFrom(stmt: ast.ImportFrom) -> str:
     """
     impXML = ""
     # Convert the imports into a list of include statements
-    fileXML = xml.form("file", stmt.module)
+    fileXML = XML.form("file", stmt.module)
     for imp in stmt.names:
-        impXML += xml.form("include", "import {}".format(imp.name) + fileXML)
+        impXML += XML.form("include", "import {}".format(imp.name) + fileXML)
     # Return the list list of xml
     return impXML
 

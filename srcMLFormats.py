@@ -39,6 +39,6 @@ START_UNIT:str = '<unit xmlns="http://www.srcML.org/srcML/src" '\
                    'revision="1.0.0" language="Python3" '\
                    'filename="{}">'
 
-END_UNIT:str = '</unit>  <!-- {} -->';
+END_UNIT:str = '</unit>  <!-- {} -->'
 
 # End of source code

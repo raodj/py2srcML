@@ -61,7 +61,7 @@ def convertOp(op: typing.Union[ast.boolop, ast.operator,
     elif isinstance(op, ast.cmpop):
         opStr = convertCmpOperator(op)
     else:
-        raise Exception("Unhandled operator {}".format(ast.dump(op)));
+        raise Exception("Unhandled operator {}".format(ast.dump(op)))
     return "<operator>{}</operator>".format(opStr)
 
 def convertCmpOperator(cop: ast.cmpop) -> str:
@@ -96,7 +96,7 @@ def convertCmpOperator(cop: ast.cmpop) -> str:
     elif isinstance(cop, ast.NotIn):
         return "not in"
     else:
-        raise Exception("Unhandled cmp operator {}".format(ast.dump(cop)));
+        raise Exception("Unhandled cmp operator {}".format(ast.dump(cop)))
 
 def convertUnaryOperator(uop: ast.unaryop) -> str:
     """Helper method to convert unary operators to corresponding
@@ -117,7 +117,7 @@ def convertUnaryOperator(uop: ast.unaryop) -> str:
     elif isinstance(uop, ast.USub):
         return "-"
     else:
-        raise Exception("Unhandled unary operator {}".format(ast.dump(uop)));
+        raise Exception("Unhandled unary operator {}".format(ast.dump(uop)))
 
 def convertOperator(op: ast.operator) -> str:
     """Helper method to convert binary operators to corresponding
@@ -158,5 +158,5 @@ def convertOperator(op: ast.operator) -> str:
     elif isinstance(op, ast.FloorDiv):
         opStr = "//"
     else:
-        raise Exception("Unhandled binary operator {}".format(ast.dump(op)));
+        raise Exception("Unhandled binary operator {}".format(ast.dump(op)))
     return opStr

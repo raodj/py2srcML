@@ -39,7 +39,7 @@
 
 import ast
 import expr2srcml
-import xml
+import XML
 import stmt2srcml
 def convertClassDef(classDef: ast.ClassDef) -> str:
     """This method converts a class definition block to corresponding
@@ -52,18 +52,18 @@ def convertClassDef(classDef: ast.ClassDef) -> str:
         The srcML fragment corresponding to the statement (includes body).
     """
 
-    XML = ""
+    classXML = ""
     # decorators
     for dec in classDef.decorator_list:
-        XML += xml.form("annotation", "@" + expr2srcml.convertName(dec))
-    XML += "class" + expr2srcml.convertName(ast.Name(classDef.name)) + "("
+        classXML += XML.form("annotation", "@" + expr2srcml.convertName(dec))
+    classXML += "class" + expr2srcml.convertName(ast.Name(classDef.name)) + "("
     # base classes
     bases = ""
     for base in classDef.bases:
-        bases += xml.form("super", expr2srcml.convertName(base))
-    bases = xml.form("super_list", bases) if len(classDef.bases) > 0 else ""
-    XML += bases
+        bases += XML.form("super", expr2srcml.convertName(base))
+    bases = XML.form("super_list", bases) if len(classDef.bases) > 0 else ""
+    classXML += bases
 
-    XML += ")"
-    XML += stmt2srcml.convertBlock(classDef.body)
-    return xml.form("class", XML)
+    classXML += ")"
+    classXML += stmt2srcml.convertBlock(classDef.body)
+    return XML.form("class", classXML)

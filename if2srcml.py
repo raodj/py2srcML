@@ -44,7 +44,7 @@ import ast
 
 import stmt2srcml
 import expr2srcml
-import xml
+import XML
 
 def convertIf(ifStmt: ast.If, isElseIf: bool = False) -> str:
     """This method converts if-elif-else block to corresponding
@@ -60,7 +60,7 @@ def convertIf(ifStmt: ast.If, isElseIf: bool = False) -> str:
     Returns:
         The srcML fragment corresponding to the statement (includes body).
     """
-    condXML   = xml.form("condition", expr2srcml.convertExpr(ifStmt.test))
+    condXML   = XML.form("condition", expr2srcml.convertExpr(ifStmt.test))
     ifBodyXML = stmt2srcml.convertBlock(ifStmt.body)
     if not isElseIf:
         ifXML = "<if_stmt><if>if " + condXML + ifBodyXML + "</if>"
@@ -93,10 +93,10 @@ def convertIfExp(ifExp: ast.IfExp) -> str:
         The srcML fragment corresponding to the statement.
     """
     # Convert the condition 
-    condXML = xml.form("condition", expr2srcml.convertExpr(ifExp.test))
+    condXML = XML.form("condition", expr2srcml.convertExpr(ifExp.test))
     # Convert the expression for the 'true' case
-    trueXML = xml.form("then", expr2srcml.convertExpr(ifExp.body))
+    trueXML = XML.form("then", expr2srcml.convertExpr(ifExp.body))
     # Convert the expression for the 'false' case
-    falseXML = xml.form("else", expr2srcml.convertExpr(ifExp.orelse))
+    falseXML = XML.form("else", expr2srcml.convertExpr(ifExp.orelse))
     # Return the full ternary XML back
-    return xml.form("ternary", condXML + trueXML + falseXML)
+    return XML.form("ternary", condXML + trueXML + falseXML)

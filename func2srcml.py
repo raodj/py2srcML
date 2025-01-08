@@ -41,7 +41,7 @@ import typing
 
 import expr2srcml
 import stmt2srcml
-import xml
+import XML
 
 
 def convertParams(args: ast.arguments) -> str:
@@ -57,10 +57,10 @@ def convertParams(args: ast.arguments) -> str:
     # Process parameters to the function into an list of XML entries
     prmListXML = ""
     for prm in args.args:
-        prmType = xml.form("type", expr2srcml.convertExpr(prm.annotation))\
+        prmType = XML.form("type", expr2srcml.convertExpr(prm.annotation))\
             if prm.annotation else ""
-        prmDecl = xml.form("decl",  prmType + xml.form("name", prm.arg))
-        prmListXML += xml.form("parameter", prmDecl)
+        prmDecl = XML.form("decl",  prmType + XML.form("name", prm.arg))
+        prmListXML += XML.form("parameter", prmDecl)
         prmListXML += ", "
     # Remove trailing ", " and create parameter list.
     prmListXML = "(" + prmListXML[:-2] + ")"
@@ -84,7 +84,7 @@ def convertFuncDef(fnDef: ast.FunctionDef) -> str:
         The function definition to be converted to source ML
     """
     # Get return type if specified as hint. Otherwise it will be ""
-    retTypeXML = xml.form("type", expr2srcml.convertExpr(fnDef.returns))\
+    retTypeXML = XML.form("type", expr2srcml.convertExpr(fnDef.returns))\
         if fnDef.returns else ""
     # Get the name of the function
     fnName = fnDef.name
@@ -93,13 +93,13 @@ def convertFuncDef(fnDef: ast.FunctionDef) -> str:
     # Next convert the function body to corresponding XML
     fnBody = stmt2srcml.convertBlock(fnDef.body)
     # Make the sequence of elements for your function.
-    fnXML = xml.form("name", fnName, "parameter_list", prmListXML) + fnBody
+    fnXML = XML.form("name", fnName, "parameter_list", prmListXML) + fnBody
     # Return the fully formed XML for the function defintion
-    return xml.form("function", retTypeXML + fnXML) +\
+    return XML.form("function", retTypeXML + fnXML) +\
         " <!-- {} -->".format(fnName)
 
 
-def convertArg(arg: xml.AST_ExprNodes) -> str:
+def convertArg(arg: XML.AST_ExprNodes) -> str:
     """This is a helper method used in convertFuncCall to process
     each argument to a function call. 
 
@@ -115,7 +115,7 @@ def convertArg(arg: xml.AST_ExprNodes) -> str:
     # node. So we streamline it by explicitly adding "<expr>" here
     # as needed.
     if not argXML.startswith("<expr>"):
-        argXML = xml.form("expr", argXML)
+        argXML = XML.form("expr", argXML)
     return argXML
 
 
@@ -137,12 +137,12 @@ def convertFuncCall(call: ast.Call) -> str:
 
     # Next figure out the arguments to the function call.
     for arg in call.args:
-        fnXML += xml.form("argument", convertArg(arg))
+        fnXML += XML.form("argument", convertArg(arg))
 
     # Handle named arguments in function calls. Eg: print("0",end="")
     if call.keywords:
         for kw in call.keywords:
-            fnXML += xml.form("argument", xml.form("name", kw.arg) +\
+            fnXML += XML.form("argument", XML.form("name", kw.arg) +\
                 expr2srcml.convertExpr(kw.value))
 
     # Add the ending XML-node for the function call.
@@ -164,6 +164,6 @@ def convertLambda(lmda: ast.Lambda) -> str:
     lmdaBody = "<block>: <block_content>" + expr2srcml.convertExpr(lmda.body) +\
         "</block_content></block>"
     # Return the lambda XML
-    return xml.form("lambda", paramXML + lmdaBody)
+    return XML.form("lambda", paramXML + lmdaBody)
 
 # End of source code

@@ -63,7 +63,7 @@ def convert(pySrcPath: str) -> None:
     if not srcFile.readable():
         raise IOError("Unable to read from {}".format(pySrcPath))
     # Now that the file is valid, let's parse it with Python's ast
-    srcAST: ast.Module = ast.parse(srcFile.read());
+    srcAST: ast.Module = ast.parse(srcFile.read())
     # Now, let's process the body of the top-level module
     print(srcMLFormats.START_UNIT.format(pySrcPath))
     convertModule(srcAST)

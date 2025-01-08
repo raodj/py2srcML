@@ -46,7 +46,7 @@ import loops2srcml
 import import2srcml
 import op2srcml
 import if2srcml
-import xml
+import XML
 import class2srcml
 import try2srcml
 
@@ -87,10 +87,10 @@ def convertAssignment(stmt: ast.Assign) -> str:
         The srcML XML corresponding to the given assignment statement
     """
     if len(stmt.targets) > 1: 
-        raise Exception("Unhandled many targets {}".format(ast.dump(stmt)));
-    rhsXML = xml.form("operator", "=") + expr2srcml.convertExpr(stmt.value)
+        raise Exception("Unhandled many targets {}".format(ast.dump(stmt)))
+    rhsXML = XML.form("operator", "=") + expr2srcml.convertExpr(stmt.value)
     lhsXML = expr2srcml.convertExpr(stmt.targets[0])
-    return xml.form("expr_stmt", lhsXML + rhsXML)
+    return XML.form("expr_stmt", lhsXML + rhsXML)
 
 
 def convertAugAssignment(stmt: ast.AugAssign) -> str:
@@ -107,7 +107,7 @@ def convertAugAssignment(stmt: ast.AugAssign) -> str:
     lhsXML = expr2srcml.convertExpr(stmt.target)
     opXML  = op2srcml.convertOp(stmt.op)
     rhsXML = expr2srcml.convertExpr(stmt.value)
-    return xml.form("expr_stmt", lhsXML + opXML + rhsXML)
+    return XML.form("expr_stmt", lhsXML + opXML + rhsXML)
 
 def convertDeclaration(stmt: typing.Union[ast.Nonlocal,ast.Global]) -> str:
     """Helper method to convert non-local and global variable declarations
