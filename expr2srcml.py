@@ -212,7 +212,7 @@ def convertSlice(slice: ast.Slice) -> str:
     hiXML    = convertExpr(slice.upper) if slice.upper else ""
     stepXML  = colXML + convertExpr(slice.step)  if slice.step  else ""
     # Return the combined XML back
-    return XML.form("index", "[" + lowXML + colXML + hiXML + stepXML + "]")
+    return XML.form("index", "[" + XML.form("expr", lowXML + colXML + hiXML + stepXML ) + "]")
 
 
 def convertSubscript(sub: ast.Subscript) -> str:
