@@ -96,7 +96,7 @@ def convertFuncDef(fnDef: ast.FunctionDef) -> str:
     fnXML = XML.form("name", fnName, "parameter_list", prmListXML) + fnBody
     # Return the fully formed XML for the function defintion
     return XML.form("function", retTypeXML + fnXML) +\
-        " <!-- {} -->".format(fnName)
+        " " + XML.formComment(fnName)
 
 
 def convertArg(arg: XML.AST_ExprNodes) -> str:
@@ -146,8 +146,7 @@ def convertFuncCall(call: ast.Call) -> str:
                 expr2srcml.convertExpr(kw.value))
 
     # Add the ending XML-node for the function call.
-    # fnXML += ")</argument_list></call> <!-- {} -->".format(fnName)
-    fnXML += ")</argument_list></call>"
+    fnXML += ")</argument_list></call> {}".format(XML.formComment(fnName))
     return fnXML
 
 

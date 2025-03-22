@@ -74,6 +74,9 @@ def form(*tagValPairs) -> str:
             xmlStr += "<{}>{}</{}>".format(stTag, val, endTag)
     return xmlStr
 
+def formComment(text: str) -> str:
+    return "<!-- {} -->".format(escapeCommentContent(text))
+
 def escape(text: str) -> str:
     """Escapes <, >, & characters from an input string
     Arguments:
@@ -86,6 +89,16 @@ def escape(text: str) -> str:
     text = text.replace(">", "&gt;")
     # text.replace("\'", "&apos;")
     # text.replace("\"", "&quot;")
+    return text
+
+def escapeCommentContent(text: str) -> str:
+    """Escapes double hypen from an input string
+    Arguments:
+        text: The input string
+    Returns:
+        A string with escaped doubled hypen substrings
+    """
+    text = text.replace("--", "&#45;&#45;")
     return text
 
 # End of source code
