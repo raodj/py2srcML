@@ -46,6 +46,7 @@ function assessDir() {
             (( dirStats[0]++ ))
             # Process the source file and update directory stats
             echo "${pySrc}" >> py2srcml_log.txt
+            echo "${pySrc}" >> py2srcml_validator_log.txt
             "${PY2SRCML}" "${pySrc}" > py2srcml_log.xml 2>> py2srcml_log.txt
             if [ $? -eq 0 ]; then
               # XML successfully generated
@@ -55,8 +56,8 @@ function assessDir() {
               if [ $? -eq 0 ]; then
                 (( dirStats[2]++ ))
               fi
-              rm py2srcml_log.xml
             fi
+            rm py2srcml_log.xml
         done
     fi
     # Print the statistics for this directory
@@ -69,6 +70,10 @@ function assessDir() {
 # The main function
 #   $*: The main function 
 function main() {
+    # Clear out log files if they already exist
+    cat "" > py2srcml_log.txt
+    cat "" > py2srcml_validator_log.txt
+    
     echo -e "#Files\t#Gen\t#Valid\tDir"
     for dir in $*;
     do
