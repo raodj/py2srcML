@@ -42,7 +42,7 @@ def convertModule(module: ast.Module) -> None:
     """Helper method to generate srcML for a given module. A module
     consists of many functions.
     """
-    print(stmt2srcml.convertBlock(module.body))
+    print(stmt2srcml.convertBlock(module.body, content_only=True))
 
     # print("<block>:<block_content>")
     # Process each statement in the module 
@@ -81,6 +81,7 @@ def main():
     if len(sys.argv) < 2:
         print("Specify python source file as command-line argument.")
     else:
+        print(srcMLFormats.PROLOG)
         # Process each source file specified as command-line argument
         for pySrcPath in sys.argv[1:]:
             # print("Converting {}".format(pySrcPath))

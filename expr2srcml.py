@@ -174,8 +174,8 @@ def convertList(lst: ast.List) -> str:
         lstXML += XML.form("operator", ",") if lstXML else ""
         lstXML += convertExpr(entry)
     # Return the overall index expression
-    lstXML = "[" + lstXML + "]"
-    return XML.form("block", lstXML)
+    lstXML = "[" + XML.form("expr", lstXML) + "]"
+    return XML.form("index", lstXML)
 
 def convertSet(set: ast.Set) -> str:
     """Method to convert a set of the form {1, 2, 3} to srcML XML

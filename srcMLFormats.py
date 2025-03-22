@@ -35,10 +35,12 @@
 # used to generate srcML from a given Python string.
 
 START_UNIT:str = '<unit xmlns="http://www.srcML.org/srcML/src" '\
-                   'xmlns:py="http://www.srcML.org/srcML/cpp" '\
+                   'xmlns:py="http://www.srcML.org/srcML/py" '\
                    'revision="1.0.0" language="Python3" '\
                    'filename="{}">'
 
 END_UNIT:str = '</unit>  <!-- {} -->'
+
+PROLOG:str = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"
 
 # End of source code

@@ -58,21 +58,23 @@ AST_StmtNodes = typing.Union[ast.FunctionDef, ast.AsyncFunctionDef,
     ast.Import, ast.ImportFrom, ast.Global, ast.Nonlocal, ast.Expr,
     ast.Pass, ast.Break, ast.Continue]
 
-def convertBlock(block: AST_StmtNodes) -> str:
+def convertBlock(block: AST_StmtNodes, content_only: bool = False) -> str:
     """Helper method to convert a block of code such as body of
     an if-statement, else-statement, for-loop etc. to srcML
     
     Arguments:
         block: Any AST node for an statement can be passed-in.
+        content_only: Boolean flag to determine whether the surrounding block 
+            and block_content tags should be returned
 
     Returns:
         The srcML XML corresponding to the body.
     """
-    blockXML  = "<block>:<block_content>"
+    blockXML  = "<block>:<block_content>" if not content_only else ""
     for stmt in block:
         # print(ast.dump(stmt))
         blockXML += convertStmt(stmt)
-    blockXML += "</block_content></block>"
+    blockXML += "</block_content></block>" if not content_only else ""
     return blockXML
 
 
