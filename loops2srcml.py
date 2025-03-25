@@ -48,7 +48,7 @@ def convertForLoop(stmt: ast.For) -> str:
     srcML is unspecified.
     """
     forXML = "<for>for <control><init><decl>" +\
-        expr2srcml.convertExpr(stmt.target) + "<range>in " +\
+        expr2srcml.convertExpr(stmt.target) + " <range>in " +\
         expr2srcml.convertExpr(stmt.iter) +\
         "</range></decl></init></control>"
     forXML += stmt2srcml.convertBlock(stmt.body)
