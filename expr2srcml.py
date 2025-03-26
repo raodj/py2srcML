@@ -226,7 +226,7 @@ def convertSubscript(sub: ast.Subscript) -> str:
         Returns a string corresponding to the XML
     """
     sliceXML = convertExprValue(sub.slice)
-    if isinstance(sub.slice, ast.Constant):
+    if not isinstance(sub.slice, ast.Slice):
         sliceXML = XML.form("index", "[" + sliceXML + "]")
     return XML.form("name", convertExpr(sub.value) + sliceXML)
 
