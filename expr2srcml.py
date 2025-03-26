@@ -225,7 +225,10 @@ def convertSubscript(sub: ast.Subscript) -> str:
     Returns:
         Returns a string corresponding to the XML
     """
-    return convertExpr(sub.value) + convertExprValue(sub.slice)
+    sliceXML = convertExprValue(sub.slice)
+    if isinstance(sub.slice, ast.Constant):
+        sliceXML = XML.form("index", "[" + sliceXML + "]")
+    return XML.form("name", convertExpr(sub.value) + sliceXML)
 
 
 def convertUnaryOp(uop: ast.UnaryOp) -> str:
